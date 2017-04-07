@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../marked-element/marked-element.html">
+<link rel="import" href="../optinomic-title/optinomic-title.html">
 <!--
 `optinomic-app-page-readme`
 Readme | Helppage of Optinomic-Apps
@@ -73,10 +74,10 @@ Readme | Helppage of Optinomic-Apps
         }
         </style>
         <template is="dom-if" if="[[_current_app.found]]">
-            <h1>[[_current_app.data.name]]</h1>
-            <p>[[_current_app.data.short_description]] | V[[_current_app.data.version]]</p>
+            <optinomic-title show_toggle_button small h1="[[_current_app.data.name]]" h2="[[_current_app.data.short_description]]" h3="[[_current_app.data.version]]"></optinomic-title>
             <h2>[[t.description]] </h2>
-            <p>[[_current_app.data.description]]</p>
+            <p>[[_current_app.data.descripti on]]
+            </p>
         </template>
         <h2>[[t.readme]]</h2>
         <marked-element markdown="[[markdown]]">
@@ -95,6 +96,18 @@ Readme | Helppage of Optinomic-Apps
     Polymer({
 
         is: 'optinomic-app-page-readme',
+
+        __init: function() {
+
+            // Load Data if not available
+            if (this._clinic === null) {
+                this.dispatch('actionGetClinic');
+            };
+
+            if (this._current_app === null) {
+                this.dispatch('actionGetApps');
+            };
+        },
 
         __translate: function(given_language) {
             var t = {
@@ -122,7 +135,7 @@ Readme | Helppage of Optinomic-Apps
             this.__translate(this.language);
         },
 
-        behaviors: [ReduxBehavior],
+        behaviors: [ReduxBehavior, AsyncActionsBehavior],
 
         properties: {
             markdown: {
